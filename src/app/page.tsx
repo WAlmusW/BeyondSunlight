@@ -1,67 +1,102 @@
 "use client";
+// Photos from https://citizenofnowhe.re/lines-of-the-city
+import { useRef, useState, useEffect } from "react";
+import "./styles.css";
+import {
+  motion,
+  MotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import Image from "next/image";
 
-// React
-import { motion, useScroll, useTransform } from "framer-motion";
+function useParallax(value: MotionValue<number>) {
+  return useTransform(value, [0, 1], [-300, 300]); // Parallax distance
+}
 
-// React Server Components
-// import * as motion from "framer-motion/client";
+function ImageCustom({ id }: { id: number }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref });
+  const y = useParallax(scrollYProgress);
 
-export default function Home() {
-  // Access scroll data using useScroll
+  return (
+    <section>
+      <div ref={ref}>
+        {/* <video src="/1.mp4" autoPlay loop muted></video> */}
+        <Image
+          src={`/images/${id}.jpg`}
+          alt="A London skyscraper"
+          width={600}
+          height={400}
+        />
+      </div>
+      <motion.h2 style={{ y }}>{`#00${id}`}</motion.h2>
+    </section>
+  );
+}
+
+export default function App() {
   const { scrollYProgress } = useScroll();
 
-  // Transform the background color from sky blue to deep ocean blue
+  // Define background color based on scroll position
   const backgroundColor = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.5, 0.8, 1], // Add intermediate steps for smoother transition
-    ["#87CEEB", "#00BFFF", "#1E90FF", "#1C3B73", "#002f4b"] // From light sky blue to deep ocean blue
+    [0, 0.2, 0.5, 0.8, 1],
+    ["#87CEEB", "#00BFFF", "#1E90FF", "#1C3B73", "#002f4b"]
   );
 
-  // Scale the fish/bubbles as we scroll (appear larger as we scroll down)
-  const fishScale = useTransform(scrollYProgress, [0, 1], [0.5, 1.5]);
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  const imageCount = 5; // Total number of images
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.onChange((latest) => {
+      // Calculate the current image index based on the scroll progress
+      const index = Math.round(latest * (imageCount - 1));
+      setCurrentIndex(index);
+    });
+
+    return () => {
+      unsubscribe(); // Clean up the subscription on unmount
+    };
+  }, [scrollYProgress, imageCount]);
 
   return (
     <motion.div
       style={{
         backgroundColor,
-        height: "200vh", // Ensure enough height to scroll
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        position: "relative",
+        minHeight: "100vh",
+        transition: "background-color 0.5s",
       }}
     >
-      <h1 style={{ marginBottom: "2rem" }}>Dive into the Ocean</h1>
-
-      {/* Fish/Bubble animation */}
-      <motion.div
-        style={{
-          width: 100,
-          height: 100,
-          backgroundColor: "lightcoral",
-          borderRadius: "50%", // Round bubble/fish
-          scale: fishScale, // Scale effect on scroll
-          position: "absolute",
-          bottom: "10%", // Start at bottom of the viewport
-        }}
-      >
-        <p style={{ color: "white" }}>🐠</p> {/* Representing a fish */}
-      </motion.div>
-
-      <motion.div
-        style={{
-          width: 50,
-          height: 50,
-          backgroundColor: "lightblue",
-          borderRadius: "50%",
-          position: "absolute",
-          bottom: "20%", // Start a bit higher than the fish
-          right: "20%",
-        }}
-      >
-        {/* Another bubble */}
+      {[1, 2, 3, 4, 5].map((image) => (
+        <ImageCustom id={image} key={image} />
+      ))}
+      {/* <motion.div className="progress" style={{ scaleX }} /> */}
+      <motion.div className="navigation-bar">
+        {Array.from({ length: imageCount }).map((_, index) => (
+          <motion.div
+            key={index}
+            className="nav-marker"
+            style={{
+              background:
+                index === currentIndex ? "var(--blue)" : "var(--white)",
+              height: 20,
+              width: 20,
+              borderRadius: "50%",
+              margin: "5px 0",
+              opacity: index === currentIndex ? 1 : 0.5,
+            }}
+          >
+            {index + 1}00M
+          </motion.div>
+        ))}
       </motion.div>
     </motion.div>
   );
