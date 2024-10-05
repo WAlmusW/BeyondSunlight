@@ -2,23 +2,40 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import "./Page1.css";
 
 export interface CelestialObject {
   classname: string;
   name: string;
   id: number;
-  startPos: [number, number, number];
-  optionPos: [number, number, number];
-  sunFocusPos: [number, number, number];
-  planetFocusPos: [number, number, number];
-  curPos: [number, number, number];
+  curPos: number[];
   description?: string;
+  descPos: number[];
+  props2Pos: number[];
   icon?: string;
 }
 
-const Section1 = () => {
-  const [scrollCount, setScrollCount] = useState(0); // Count scroll events
+function removeOverflowHidden() {
+  document.body.style.overflow = "visible";
+}
+
+function putOverflowHidden() {
+  document.body.style.overflow = "hidden";
+}
+
+const CelestialObject = () => {
+  const [scrollCount, setScrollCount] = useState(0);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const [windowHeight, setWindowHeight] = useState<number | null>(null);
+  const router = useRouter();
+  const cookieName = "page1Reloaded";
+
+  useEffect(() => {
+    putOverflowHidden();
+  });
 
   // Scroll event listener to detect scroll up/down
   useEffect(() => {
@@ -37,64 +54,115 @@ const Section1 = () => {
     };
   }, [scrollCount]);
 
-  function handleClick(itemId: number) {
-    if (scrollCount > 0) {
-      setSelectedId(selectedId);
+  // Resize event listener to detect different screen sizes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+        setWindowHeight(window.innerHeight);
+      };
+
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
-  }
+  }, []);
+
+  const goToPage2 = () => {
+    removeOverflowHidden();
+    router.push("/page2");
+  };
+
+  const calculatePos = (
+    xPercentage: number,
+    yPercentage: number,
+    scale: number
+  ) => {
+    const x = (xPercentage / 100) * (windowWidth ? windowWidth : 1);
+    const y = (yPercentage / 100) * (windowHeight ? windowHeight : 1);
+    return [x, y, scale];
+  };
 
   const sun: CelestialObject = {
     classname: "the-dwarf-star",
     name: "The Dwarf Star",
     id: 1,
-    startPos: [-1000, -300, 1],
-    optionPos: [1000, 150, 1.3],
-    sunFocusPos: [1350, 300, 0.85],
-    planetFocusPos: [1500, -300, 0.3],
     curPos: (() => {
       if (scrollCount === 0) {
-        return [-1000, -300, 1];
+        // Start Position
+        return calculatePos(-100, -100, 1);
       } else if (scrollCount > 0 && selectedId === 1) {
-        return [1350, 300, 0.85];
+        // The Dwarf Star Focused Position
+        return calculatePos(0, -50, 0.85);
       } else if (scrollCount > 0 && selectedId === 2) {
-        return [1950, 100, 0.3];
+        // EGO Focused Position
+        return calculatePos(-35, -75, 0.3);
       } else if (scrollCount > 0) {
-        return [1050, 200, 1.2];
-      }
-      return [-1000, -300, 1];
+        // Option Position
+        return calculatePos(-20, -60, 1.2);
+      } // Start Position
+      return calculatePos(-50, -50, 1);
     })(),
     description:
       'A dwarf star is a star of relatively small size and low luminosity. Most main sequence stars are dwarf stars. The meaning of the word "dwarf" was later extended to some star-sized objects that are not stars, and compact stellar remnants that are no longer stars.',
+    descPos: calculatePos(-22, -50, 1),
+    props2Pos: calculatePos(0, 0, 0),
   };
 
   const planet: CelestialObject = {
-    classname: "ego",
-    name: "EGO",
+    classname: "cerulean",
+    name: "Cerulean",
     id: 2,
-    startPos: [0, 690, 3],
-    optionPos: [500, -270, 0.65],
-    sunFocusPos: [550, -550, 0.3],
-    planetFocusPos: [0, -350, 0.85],
     curPos: (() => {
       if (scrollCount === 0) {
-        return [0, 690, 3];
+        // Start position
+        return calculatePos(0, 100, 3);
       } else if (scrollCount > 0 && selectedId === 1) {
-        return [550, -550, 0.3];
+        // The Dwarf Star Focused Position
+        return calculatePos(35, -75, 0.3);
       } else if (scrollCount > 0 && selectedId === 2) {
-        return [0, -350, 0.85];
+        // EGO Focused Position
+        return calculatePos(0, -50, 0.85);
       } else if (scrollCount > 0) {
-        return [500, -270, 0.65];
-      }
-      return [0, 0, 1];
+        // Option Position
+        return calculatePos(33, -42, 0.65);
+      } // Start Position
+      return calculatePos(0, 100, 3);
     })(),
     description:
-      "Exoplanet EGO orbits a distant star in the black depths of the cosmos, a mysterious world entirely covered by water. Its surface is perpetually dark, as the thick clouds of toxic gases block out most of the faint sunlight. There are no continents, no islands, no towering mountains—only a vast, unbroken ocean that spans the entire planet. Its waters are unusually dense, with a chemical composition unlike any known on Earth, giving them an almost metallic sheen under faint starlight.",
+      "Cerulean is a captivating planet with a mass 1.75 times that of Earth and a radius 1.9 times larger, featuring an average temperature of 295 K. Despite its size, Cerulean emits approximately 0.3 times the luminosity of the Sun, resulting in a serene blue atmosphere that thrives in the absence of direct sunlight. Life on this planet has adapted uniquely, utilizing bioluminescent organisms and innovative technologies to capture and retain heat, creating vibrant communities that flourish in harmony with their cool, twilight environment.",
+    descPos: calculatePos(49, -50, 1),
+    props2Pos: (() => {
+      if (scrollCount === 0) {
+        return calculatePos(0, -20, 3);
+      } else {
+        return calculatePos(0, -25, 0);
+      }
+    })(),
   };
 
   const items = [sun, planet];
 
   return (
     <div>
+      <motion.div
+        animate={{
+          x: items[1].props2Pos[0],
+          y: items[1].props2Pos[1],
+          scale: items[1].props2Pos[2],
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          duration: 10,
+        }}
+        className="title"
+      >
+        Have You Ever Wonder?
+      </motion.div>
       {items.map((item) => (
         <motion.div
           key={item.id}
@@ -118,17 +186,47 @@ const Section1 = () => {
       ))}
       {/* Display text when a celestial object is focused */}
       {selectedId !== null && (
-        <div className="infographic">
-          <div className="name montserrat-font-name">
-            {items.find((item) => item.id === selectedId)?.name}
-          </div>
-          <div className="description montserrat-font-description">
-            {items.find((item) => item.id === selectedId)?.description}
-          </div>
-        </div>
+        <>
+          <motion.div
+            className="infographic"
+            animate={{
+              x: items[selectedId - 1].descPos[0],
+              y: items[selectedId - 1].descPos[1],
+              scale: items[selectedId - 1].descPos[2],
+            }}
+          >
+            <div className="name montserrat-font-name">
+              {items.find((item) => item.id === selectedId)?.name}
+            </div>
+            <div className="description montserrat-font-description">
+              {items.find((item) => item.id === selectedId)?.description}
+            </div>
+          </motion.div>
+          {scrollCount > 0 && selectedId === 2 && (
+            <motion.button
+              className="custom-button"
+              animate={{
+                x: calculatePos(9, 0, 0)[0],
+                y: calculatePos(0, 75, 0)[1],
+                opacity: 1,
+                scale: 1,
+              }}
+              initial={{
+                x: 0,
+                y: 0,
+                opacity: 0,
+                scale: 0.8,
+              }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              onClick={goToPage2}
+            >
+              Enter
+            </motion.button>
+          )}
+        </>
       )}
     </div>
   );
 };
 
-export default Section1;
+export default CelestialObject;
