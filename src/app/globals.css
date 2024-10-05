@@ -1,4 +1,20 @@
 /* Global styles */
+.montserrat-font-name {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-size: 80px;
+}
+
+.montserrat-font-description {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 2;
+  font-style: normal;
+  font-size: 22px;
+}
+
 html,
 body {
   margin: 0;
@@ -20,7 +36,7 @@ body {
 }
 
 /* Sun styles */
-.Sun {
+.the-dwarf-star {
   width: 50%;
   height: 100%;
   background-color: yellow; /* Change to yellow */
@@ -31,7 +47,7 @@ body {
 }
 
 /* Planet styles */
-.Planet {
+.ego {
   width: 50%;
   height: 100%;
   background-color: yellow; /* Change to yellow */
@@ -39,6 +55,26 @@ body {
   position: absolute;
   top: 50%;
   left: 25%;
+}
+
+.infographic {
+  position: absolute;
+  top: 3%;
+  left: 1.5%;
+  background: transparent;
+  padding: 10px;
+  width: 35%;
+}
+
+.name {
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.description {
+  padding: 10px;
+  border-radius: 5px;
+  width: 65%;
 }
 
 .modal {
