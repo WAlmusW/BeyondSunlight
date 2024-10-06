@@ -10,6 +10,7 @@ export interface Scene {
   id: number;
   background_scene: string;
   items?: { [key: string]: string }; // Can store multiple items as a key-value pair
+  clickable?: { [key: string]: { img: string; coords: string } }; // Store clickable items with coordinates
   description: string; // Scene description
   waterLevel: number;
 }
@@ -49,7 +50,13 @@ const scenes: Scene[] = [
     items: {
       item_1: "/page2_images/trench_scene4.png",
       item_2: "/page2_images/smoke_vent_scene4.png",
-      item_3: "/page2_images/thermal_vent_click_scene4.png",
+    },
+    clickable: {
+      thermal_vent: {
+        img: "/page2_images/thermal_vent_click_scene4.png", // Clickable image URL
+        coords:
+          "100,700, 200,600, 400,500, 600,450, 800,400, 1000,450, 1200,500, 1400,600, 1600,700, 1700,800, 1500,900, 1200,950, 900,1000, 700,1050, 400,1000, 200,900", // Clickable area coordinates
+      },
     },
     description: "Scene #004 with three related items.",
     waterLevel: 4000,
@@ -82,6 +89,11 @@ export function SceneComponent({ scene }: SceneProps) {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  // Function to handle clicks on clickable items
+  const handleClick = (key: string) => {
+    console.log(`${key} clicked!`);
+  };
 
   return (
     <section
@@ -132,13 +144,41 @@ export function SceneComponent({ scene }: SceneProps) {
             className="related-item-image"
             style={{
               position: "absolute",
-              bottom: `${Math.random() * 50 + 20}%`, // Random position just for example
-              right: `${Math.random() * 50 + 10}%`,
+              bottom: `0%`, // Random position just for example
+              right: `0%`,
               width: "100%",
               height: "100%",
             }}
           />
         ))}
+
+      {/* Render clickable items using usemap */}
+      {scene.clickable && (
+        <>
+          <img
+            src={scene.clickable.thermal_vent.img}
+            useMap="#clickableMap"
+            alt="Clickable Image"
+            style={{
+              position: "absolute",
+              bottom: "20%", // Adjust as needed for positioning
+              right: "0%", // Adjust as needed for positioning
+              width: "100%", // Adjust size as needed
+              height: "100%",
+            }}
+          />
+          <map name="clickableMap">
+            <area
+              shape="poly"
+              coords={scene.clickable.thermal_vent.coords}
+              //   href=""
+              alt="Clickable Area"
+              onClick={() => handleClick("thermal_vent")}
+              style={{ cursor: "pointer" }} // Ensure it looks clickable
+            />
+          </map>
+        </>
+      )}
     </section>
   );
 }

@@ -24,7 +24,11 @@ function putOverflowHidden() {
   document.body.style.overflow = "hidden";
 }
 
-const CelestialObject = () => {
+export interface CelestialObjectProps {
+  onButtonClick: () => void; // Accept the function as a prop
+}
+
+const CelestialObject: React.FC<CelestialObjectProps> = ({ onButtonClick }) => {
   const [scrollCount, setScrollCount] = useState(0);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
@@ -216,7 +220,7 @@ const CelestialObject = () => {
                 scale: 0.8,
               }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
-              onClick={goToPage2}
+              onClick={onButtonClick}
             >
               Enter
             </motion.button>
