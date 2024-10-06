@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import "./Page1.css";
 
 export interface CelestialObject {
@@ -31,7 +30,6 @@ const CelestialObject = () => {
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
   const [windowHeight, setWindowHeight] = useState<number | null>(null);
   const router = useRouter();
-  const cookieName = "page1Reloaded";
 
   useEffect(() => {
     putOverflowHidden();
@@ -87,14 +85,14 @@ const CelestialObject = () => {
 
   const sun: CelestialObject = {
     classname: "the-dwarf-star",
-    name: "The Dwarf Star",
+    name: "Blue Giant",
     id: 1,
     curPos: (() => {
       if (scrollCount === 0) {
         // Start Position
         return calculatePos(-100, -100, 1);
       } else if (scrollCount > 0 && selectedId === 1) {
-        // The Dwarf Star Focused Position
+        // Blue Gianr Focused Position
         return calculatePos(0, -50, 0.85);
       } else if (scrollCount > 0 && selectedId === 2) {
         // EGO Focused Position
@@ -106,7 +104,7 @@ const CelestialObject = () => {
       return calculatePos(-50, -50, 1);
     })(),
     description:
-      'A dwarf star is a star of relatively small size and low luminosity. Most main sequence stars are dwarf stars. The meaning of the word "dwarf" was later extended to some star-sized objects that are not stars, and compact stellar remnants that are no longer stars.',
+      "This type of star emits a bright blue light from its temperature. Type 3 luminosity and more than 3.7 times hotter than the sun, making it unlikely for life to appear on its orbiting planets.",
     descPos: calculatePos(-22, -50, 1),
     props2Pos: calculatePos(0, 0, 0),
   };
@@ -120,7 +118,7 @@ const CelestialObject = () => {
         // Start position
         return calculatePos(0, 100, 3);
       } else if (scrollCount > 0 && selectedId === 1) {
-        // The Dwarf Star Focused Position
+        // Blue Gianr Focused Position
         return calculatePos(35, -75, 0.3);
       } else if (scrollCount > 0 && selectedId === 2) {
         // EGO Focused Position
@@ -132,7 +130,7 @@ const CelestialObject = () => {
       return calculatePos(0, 100, 3);
     })(),
     description:
-      "Cerulean is a captivating planet with a mass 1.75 times that of Earth and a radius 1.9 times larger, featuring an average temperature of 295 K. Despite its size, Cerulean emits approximately 0.3 times the luminosity of the Sun, resulting in a serene blue atmosphere that thrives in the absence of direct sunlight. Life on this planet has adapted uniquely, utilizing bioluminescent organisms and innovative technologies to capture and retain heat, creating vibrant communities that flourish in harmony with their cool, twilight environment.",
+      "Cerulean is a rocky exoplanet orbiting a blue giant star. This planet orbits far enough to be in the star’s goldilock zone. With the surface covered entirely out of water, making it possible for life thrive in this planet.",
     descPos: calculatePos(49, -50, 1),
     props2Pos: (() => {
       if (scrollCount === 0) {

@@ -1,9 +1,6 @@
 "use client";
-// Photos from https://citizenofnowhe.re/lines-of-the-city
-import { useRef, useState, useEffect } from "react";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import "./style2.css";
+
+import { useRef, useState, useEffect, useMemo } from "react";
 import {
   motion,
   MotionValue,
@@ -11,41 +8,164 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import Image from "next/image";
+import "./style2.css";
+// import Particles, { initParticlesEngine } from "@tsparticles/react";
+// import {
+//   type Container,
+//   type ISourceOptions,
+//   MoveDirection,
+//   OutMode,
+// } from "@tsparticles/engine";
+// import { loadSlim } from "@tsparticles/slim"; // Particle Engine
 
 function useParallax(value: MotionValue<number>) {
-  return useTransform(value, [0, 1], [-300, 300]); // Parallax distance
-}
-
-function putOverflowHidden() {
-  document.body.style.overflow = "hidden";
+  return useTransform(value, [0, 1], [-300, 300]);
 }
 
 function ImageCustom({ id }: { id: number }) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const y = useParallax(scrollYProgress);
 
   return (
-    <section className="section-page2">
-      <div ref={ref}>
-        {/* <video src="/1.mp4" autoPlay loop muted></video> */}
-        <Image
-          src={`/images/${id}.jpg`}
-          alt="A London skyscraper"
-          width={600}
-          height={400}
-        />
-      </div>
+    <section
+      className="section-page2"
+      style={{
+        backgroundImage: `url(/page2_images/scene${id}.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+      }}
+      ref={ref}
+    >
       <motion.h2 style={{ y }}>{`#00${id}`}</motion.h2>
     </section>
   );
 }
 
 export default function App() {
+  //   const particleOptions: ISourceOptions = useMemo(
+  //     () => ({
+  //       particles: {
+  //         number: {
+  //           value: 80,
+  //           density: {
+  //             enable: true,
+  //             value_area: 800,
+  //           },
+  //         },
+  //         color: {
+  //           value: "#ffffff",
+  //         },
+  //         shape: {
+  //           type: "circle",
+  //           stroke: {
+  //             width: 0,
+  //             color: "#000000",
+  //           },
+  //           polygon: {
+  //             nb_sides: 5,
+  //           },
+  //           image: {
+  //             src: "img/github.svg",
+  //             width: 100,
+  //             height: 100,
+  //           },
+  //         },
+  //         opacity: {
+  //           value: 0.5,
+  //           random: false,
+  //           anim: {
+  //             enable: false,
+  //             speed: 1,
+  //             opacity_min: 0.1,
+  //             sync: false,
+  //           },
+  //         },
+  //         size: {
+  //           value: 10,
+  //           random: true,
+  //           anim: {
+  //             enable: false,
+  //             speed: 80,
+  //             size_min: 0.1,
+  //             sync: false,
+  //           },
+  //         },
+  //         line_linked: {
+  //           enable: true,
+  //           distance: 300,
+  //           color: "#ffffff",
+  //           opacity: 0.4,
+  //           width: 2,
+  //         },
+  //         move: {
+  //           enable: true,
+  //           speed: 12,
+  //           direction: MoveDirection.none, // Converted to MoveDirection enum
+  //           random: false,
+  //           straight: false,
+  //           out_mode: OutMode.out, // Converted to OutMode enum
+  //           bounce: false,
+  //           attract: {
+  //             enable: false,
+  //             rotateX: 600,
+  //             rotateY: 1200,
+  //           },
+  //         },
+  //       },
+  //       interactivity: {
+  //         detect_on: "canvas",
+  //         events: {
+  //           onhover: {
+  //             enable: false,
+  //             mode: "repulse",
+  //           },
+  //           onclick: {
+  //             enable: true,
+  //             mode: "push",
+  //           },
+  //           resize: {
+  //             enable: true,
+  //           },
+  //         },
+  //         modes: {
+  //           grab: {
+  //             distance: 800,
+  //             line_linked: {
+  //               opacity: 1,
+  //             },
+  //           },
+  //           bubble: {
+  //             distance: 800,
+  //             size: 80,
+  //             duration: 2,
+  //             opacity: 0.8,
+  //             speed: 3,
+  //           },
+  //           repulse: {
+  //             distance: 400,
+  //             duration: 0.4,
+  //           },
+  //           push: {
+  //             particles_nb: 4,
+  //           },
+  //           remove: {
+  //             particles_nb: 2,
+  //           },
+  //         },
+  //       },
+  //       retina_detect: true,
+  //     }),
+  //     []
+  //   );
+
+  //   const particlesLoaded = async (container?: Container): Promise<void> => {
+  //     console.log(container);
+  //   };
+
   const { scrollYProgress } = useScroll();
 
-  // Define background color based on scroll position
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.2, 0.5, 0.8, 1],
@@ -59,6 +179,7 @@ export default function App() {
   });
 
   const imageCount = 5; // Total number of images
+  const waterLevel = ["200M", "1000M", "2500M", "4000M", "6000M"];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -73,27 +194,6 @@ export default function App() {
     };
   }, [scrollYProgress, imageCount]);
 
-  const cookieName = "page2Reloaded"; // Unique cookie for page 2
-  const router = useRouter();
-
-  useEffect(() => {
-    const hasReloaded = Cookies.get(cookieName);
-
-    if (!hasReloaded) {
-      // If page 2 hasn't been reloaded, set the cookie and reload the page
-      Cookies.set(cookieName, "true", { expires: 1 }); // Set cookie to expire in 1 day
-      // Mark other pages as not reloaded
-      Cookies.set("page1Reloaded", "false");
-      Cookies.set("page3Reloaded", "false");
-      window.location.reload(); // Reload the page
-    }
-
-    return () => {
-      // Optionally remove the cookie when leaving the page
-      // Cookies.remove(cookieName);
-    };
-  }, [router]);
-
   return (
     <div className="body-page2">
       <motion.div
@@ -103,10 +203,19 @@ export default function App() {
           transition: "background-color 0.5s",
         }}
       >
-        {[1, 2, 3, 4, 5].map((image) => (
-          <ImageCustom id={image} key={image} />
+        {[...Array(imageCount)].map((_, index) => (
+          <ImageCustom id={index + 1} key={index} />
         ))}
-        {/* <motion.div className="progress" style={{ scaleX }} /> */}
+
+        {/* Conditionally render particles for scenes 2 to 5 */}
+        {/* {currentIndex >= 1 && currentIndex <= 4 && (
+          <Particles
+            id="tsparticles"
+            options={particleOptions}
+            particlesLoaded={particlesLoaded}
+          />
+        )} */}
+
         <motion.div className="navigation-bar">
           {Array.from({ length: imageCount }).map((_, index) => (
             <motion.div
@@ -119,10 +228,11 @@ export default function App() {
                 width: 20,
                 borderRadius: "50%",
                 margin: "5px 0",
+                left: "5%",
                 opacity: index === currentIndex ? 1 : 0.5,
               }}
             >
-              {index + 1}00M
+              {waterLevel[index]}
             </motion.div>
           ))}
         </motion.div>

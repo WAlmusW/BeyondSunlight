@@ -57,11 +57,13 @@ body {
 .the-dwarf-star {
   width: 50%;
   height: 100%;
-  background-color: yellow;
+  background-image: url("/page1_images/Blue_giant_1.png");
+  background-position: center;
   border-radius: 50%;
   position: absolute;
   top: 50%;
   left: 25%;
+  box-shadow: 0 0 20px 10px rgba(0, 150, 255, 0.6);
 }
 
 .cerulean {
@@ -88,7 +90,7 @@ body {
 
 .infographic {
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 25%;
   background: transparent;
   padding-top: 5%;
@@ -101,6 +103,7 @@ body {
 }
 
 .description {
+  padding-top: 5%;
   padding-right: 5%;
   border-radius: 5px;
   width: 65%;
