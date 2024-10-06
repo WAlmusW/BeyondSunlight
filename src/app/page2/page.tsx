@@ -4,6 +4,8 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import Modal from "./Modal";
 import "./style2.css";
+import { FiAlertCircle, FiChevronLeft } from "react-icons/fi"; // Importing the icons
+import { useRouter } from "next/navigation"; // Importing the router
 
 // Scene interface containing background and items
 export interface Scene {
@@ -20,10 +22,7 @@ const scenes: Scene[] = [
   {
     id: 1,
     background_scene: "/page2_images/scene1.png",
-    items: {
-      item_1: "/page2_images/item1_scene1.png",
-      item_2: "/page2_images/item2_scene1.png",
-    },
+    items: {},
     description:
       "This is some information about scene #001 with two related items.",
     waterLevel: 200,
@@ -31,16 +30,17 @@ const scenes: Scene[] = [
   {
     id: 2,
     background_scene: "/page2_images/scene2.png",
-    items: {
-      item_1: "/page2_images/item1_scene2.png",
-    },
+    items: {},
     description: "Scene #002 with one related item.",
     waterLevel: 1000,
   },
   {
     id: 3,
     background_scene: "/page2_images/scene3.png",
-    items: {},
+    items: {
+      item_1: "/page2_images/hunter_jellyfish.png",
+      item_2: "/page2_images/flycatcher.png",
+    },
     description: "Scene #003 has no related items.",
     waterLevel: 2500,
   },
@@ -67,6 +67,40 @@ const scenes: Scene[] = [
     items: {},
     description: "Scene #005 with no related items.",
     waterLevel: 6000,
+  },
+];
+
+// Modal data for each scene
+const modalData = [
+  {
+    temperature: "298 K / 25°C",
+    molecules: ["CO₂", "O₂", "NH₃", "NO₃⁻", "CH₄"],
+    minerals: "Mineral Set 1",
+    weather: "Sunny",
+  },
+  {
+    temperature: "300 K / 27°C",
+    molecules: ["H₂O", "N₂", "O₂"],
+    minerals: "Mineral Set 2",
+    weather: "Cloudy",
+  },
+  {
+    temperature: "290 K / 17°C",
+    molecules: ["CO₂", "O₂"],
+    minerals: "Mineral Set 3",
+    weather: "Rainy",
+  },
+  {
+    temperature: "290 K / 17°C",
+    molecules: ["CO₂", "O₂"],
+    minerals: "Mineral Set 3",
+    weather: "Rainy",
+  },
+  {
+    temperature: "290 K / 17°C",
+    molecules: ["CO₂", "O₂"],
+    minerals: "Mineral Set 3",
+    weather: "Rainy",
   },
 ];
 
@@ -123,9 +157,7 @@ export function SceneComponent({ scene }: SceneProps) {
           cursor: "pointer",
         }}
         onClick={openModal}
-      >
-        ℹ️
-      </button>
+      ></button>
 
       {/* Modal for displaying scene information */}
       <Modal
@@ -136,21 +168,31 @@ export function SceneComponent({ scene }: SceneProps) {
 
       {/* Render related items */}
       {scene.items &&
-        Object.entries(scene.items).map(([key, imageUrl]) => (
-          <motion.img
-            key={key}
-            src={imageUrl}
-            alt={key}
-            className="related-item-image"
-            style={{
-              position: "absolute",
-              bottom: `0%`, // Random position just for example
-              right: `0%`,
-              width: "100%",
-              height: "100%",
-            }}
-          />
-        ))}
+        Object.entries(scene.items).map(([key, imageUrl]) => {
+          const randomBottom = Math.random() * 100; // Random value between 0 and 100 for bottom
+          const randomRight = Math.random() * 100; // Random value between 0 and 100 for right
+          // Define styles based on scene.id
+          const styles = {
+            position: "absolute",
+            bottom: `${randomBottom}%`, // Use random bottom position
+            right: `${randomRight}%`, // Use random right position
+            width: "100%",
+            height: "100%",
+            ...(scene.id === 3 ? { width: 200 } : {}),
+            ...(scene.id === 3 ? { height: 400 } : {}), // Example of changing opacity
+            // Add more styles based on different scene.id values as needed
+          };
+
+          return (
+            <motion.img
+              key={key}
+              src={imageUrl}
+              alt={key}
+              className="related-item-image"
+              style={styles}
+            />
+          );
+        })}
 
       {/* Render clickable items using usemap */}
       {scene.clickable && (
@@ -185,6 +227,7 @@ export function SceneComponent({ scene }: SceneProps) {
 
 export default function App() {
   const { scrollYProgress } = useScroll();
+  const router = useRouter(); // Initialize router for navigation
 
   const backgroundColor = useTransform(
     scrollYProgress,
@@ -199,6 +242,7 @@ export default function App() {
   });
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((latest) => {
@@ -210,6 +254,10 @@ export default function App() {
       unsubscribe(); // Clean up the subscription on unmount
     };
   }, [scrollYProgress]);
+
+  function closeModal(): void {
+    setIsModalOpen(false);
+  }
 
   return (
     <div className="body-page2">
@@ -227,22 +275,56 @@ export default function App() {
 
         {/* Navigation bar */}
         <motion.div className="navigation-bar">
+          {/* Back Button when currentIndex is 0 */}
+          {currentIndex === 0 && (
+            <button
+              style={{
+                position: "absolute",
+                top: "0%",
+                right: "1300px", // Adjust position as needed
+              }}
+              onClick={() => router.back()}
+            >
+              <FiChevronLeft className="text-white text-5xl" />
+            </button>
+          )}
+          <button
+            style={{
+              position: "absolute",
+              top: "0%",
+              right: "1200px", // Adjust position as needed
+            }}
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          >
+            <FiAlertCircle className="text-white text-5xl" />
+          </button>
+          {/* Modal for displaying scene information */}
+          {isModalOpen && (
+            <Modal
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              content={
+                <>
+                  <div>Temperature: {modalData[currentIndex].temperature}</div>
+                  <div>
+                    Molecules: {modalData[currentIndex].molecules.join(", ")}
+                  </div>
+                  <div>Minerals: {modalData[currentIndex].minerals}</div>
+                  <div>Weather: {modalData[currentIndex].weather}</div>
+                </>
+              }
+            />
+          )}
           {scenes.map((scene, index) => (
             <motion.div
               key={scene.id}
-              className="nav-marker"
-              style={{
-                background:
-                  index === currentIndex ? "var(--blue)" : "var(--white)",
-                height: 20,
-                width: 20,
-                borderRadius: "50%",
-                margin: "5px 0",
-                left: "5%",
-                opacity: index === currentIndex ? 1 : 0.5,
+              className="nav-button"
+              onClick={() => {
+                setCurrentIndex(index);
+                // Handle navigation if necessary
               }}
             >
-              {`${scenes[index].waterLevel}M`}
+              <span>{`${scene.waterLevel}M`}</span>
             </motion.div>
           ))}
         </motion.div>

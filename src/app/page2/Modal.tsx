@@ -1,20 +1,28 @@
-type ModalProps = {
+import React from "react";
+import "./modal.css"; // Add your styles for the modal here
+
+interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  content: string;
-};
+  content: React.ReactNode;
+}
 
-export default function Modal({ isOpen, onClose, content }: ModalProps) {
-  if (!isOpen) return null;
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, content }) => {
+  if (!isOpen) return null; // Don't render if not open
 
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <span className="close-button" onClick={onClose}>
+    <div
+      className="modal-overlay bg-gray-200 opacity-50 text-black rounded-lg pl-6 pt-6 text-3xl"
+      onClick={onClose}
+    >
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>
           &times;
-        </span>
-        <p>{content}</p>
+        </button>
+        {content}
       </div>
     </div>
   );
-}
+};
+
+export default Modal;

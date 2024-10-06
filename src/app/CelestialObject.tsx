@@ -13,6 +13,7 @@ export interface CelestialObject {
   description?: string;
   descPos: number[];
   props2Pos: number[];
+  props3Pos: number[];
   icon?: string;
 }
 
@@ -111,6 +112,7 @@ const CelestialObject: React.FC<CelestialObjectProps> = ({ onButtonClick }) => {
       "This type of star emits a bright blue light from its temperature. Type 3 luminosity and more than 3.7 times hotter than the sun, making it unlikely for life to appear on its orbiting planets.",
     descPos: calculatePos(-22, -50, 1),
     props2Pos: calculatePos(0, 0, 0),
+    props3Pos: calculatePos(0, 0, 0),
   };
 
   const planet: CelestialObject = {
@@ -143,6 +145,13 @@ const CelestialObject: React.FC<CelestialObjectProps> = ({ onButtonClick }) => {
         return calculatePos(0, -25, 0);
       }
     })(),
+    props3Pos: (() => {
+      if (scrollCount === 0) {
+        return calculatePos(0, -10, 2);
+      } else {
+        return calculatePos(0, -25, 0);
+      }
+    })(),
   };
 
   const items = [sun, planet];
@@ -164,6 +173,22 @@ const CelestialObject: React.FC<CelestialObjectProps> = ({ onButtonClick }) => {
         className="title"
       >
         Have You Ever Wonder?
+      </motion.div>
+      <motion.div
+        animate={{
+          x: items[1].props3Pos[0],
+          y: items[1].props3Pos[1],
+          scale: items[1].props3Pos[2],
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          duration: 10,
+        }}
+        className="subtitle"
+      >
+        A chemosynthetic-ocean world
       </motion.div>
       {items.map((item) => (
         <motion.div

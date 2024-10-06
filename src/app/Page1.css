@@ -23,6 +23,15 @@
   font-size: clamp(1rem, 5vw, 30rem);
 }
 
+.advent-pro-subtitle {
+  font-family: "Advent Pro";
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(1rem, 2vw, 30rem);
+}
+
 body {
   overflow: hidden;
   background-image: url("/page1_images/space_background.png");
@@ -45,6 +54,13 @@ body {
   padding-top: 10%;
   position: absolute;
   left: 39%;
+}
+
+.subtitle {
+  padding-top: 15%;
+  position: absolute;
+  left: 43%;
+  font-size: small;
 }
 
 .section {
@@ -75,7 +91,7 @@ body {
   position: absolute;
   top: 50%;
   left: 25%;
-  box-shadow: 0 0 10px 5px rgba(0, 150, 255, 0.6);
+  /* box-shadow: 0 0 5px 5cap rgba(0, 150, 255, 0.6); */
 }
 
 .round-box {
@@ -116,7 +132,7 @@ body {
 }
 
 .custom-button {
-  background-color: #4caf50; /* Green */
+  background-color: #2121a4; /* Green */
   border: none;
   color: white;
   padding: 15px 32px;
@@ -131,5 +147,5 @@ body {
 }
 
 .custom-button:hover {
-  background-color: #45a049;
+  background-color: #54c9db;
 }
