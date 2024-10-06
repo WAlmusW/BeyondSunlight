@@ -63,7 +63,7 @@ body {
   position: absolute;
   top: 50%;
   left: 25%;
-  box-shadow: 0 0 20px 10px rgba(0, 150, 255, 0.6);
+  box-shadow: 0 0 40px 20px rgba(0, 150, 255, 0.6);
 }
 
 .cerulean {
@@ -75,7 +75,7 @@ body {
   position: absolute;
   top: 50%;
   left: 25%;
-  box-shadow: 0 0 20px 10px rgba(0, 150, 255, 0.6);
+  box-shadow: 0 0 10px 5px rgba(0, 150, 255, 0.6);
 }
 
 .round-box {

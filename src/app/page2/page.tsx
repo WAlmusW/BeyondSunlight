@@ -1,169 +1,149 @@
 "use client";
 
-import { useRef, useState, useEffect, useMemo } from "react";
-import {
-  motion,
-  MotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import Modal from "./Modal";
 import "./style2.css";
-// import Particles, { initParticlesEngine } from "@tsparticles/react";
-// import {
-//   type Container,
-//   type ISourceOptions,
-//   MoveDirection,
-//   OutMode,
-// } from "@tsparticles/engine";
-// import { loadSlim } from "@tsparticles/slim"; // Particle Engine
 
-function useParallax(value: MotionValue<number>) {
+// Scene interface containing background and items
+export interface Scene {
+  id: number;
+  background_scene: string;
+  items?: { [key: string]: string }; // Can store multiple items as a key-value pair
+  description: string; // Scene description
+  waterLevel: number;
+}
+
+// Example scene data with related items
+const scenes: Scene[] = [
+  {
+    id: 1,
+    background_scene: "/page2_images/scene1.png",
+    items: {
+      item_1: "/page2_images/item1_scene1.png",
+      item_2: "/page2_images/item2_scene1.png",
+    },
+    description:
+      "This is some information about scene #001 with two related items.",
+    waterLevel: 200,
+  },
+  {
+    id: 2,
+    background_scene: "/page2_images/scene2.png",
+    items: {
+      item_1: "/page2_images/item1_scene2.png",
+    },
+    description: "Scene #002 with one related item.",
+    waterLevel: 1000,
+  },
+  {
+    id: 3,
+    background_scene: "/page2_images/scene3.png",
+    items: {},
+    description: "Scene #003 has no related items.",
+    waterLevel: 2500,
+  },
+  {
+    id: 4,
+    background_scene: "/page2_images/scene4.png",
+    items: {
+      item_1: "/page2_images/trench_scene4.png",
+      item_2: "/page2_images/smoke_vent_scene4.png",
+      item_3: "/page2_images/thermal_vent_click_scene4.png",
+    },
+    description: "Scene #004 with three related items.",
+    waterLevel: 4000,
+  },
+  {
+    id: 5,
+    background_scene: "/page2_images/scene5.png",
+    items: {},
+    description: "Scene #005 with no related items.",
+    waterLevel: 6000,
+  },
+];
+
+// Parallax function
+function useParallax(value: number) {
   return useTransform(value, [0, 1], [-300, 300]);
 }
 
-function ImageCustom({ id }: { id: number }) {
+// Scene component to render scenes dynamically
+type SceneProps = {
+  scene: Scene;
+};
+
+export function SceneComponent({ scene }: SceneProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const y = useParallax(scrollYProgress);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <section
       className="section-page2"
       style={{
-        backgroundImage: `url(/page2_images/scene${id}.png)`,
+        backgroundImage: `url(${scene.background_scene})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
+        position: "relative",
       }}
       ref={ref}
     >
-      <motion.h2 style={{ y }}>{`#00${id}`}</motion.h2>
+      <motion.h2 style={{ y }}>{`#00${scene.id}`}</motion.h2>
+
+      {/* Info Button */}
+      <button
+        className="info-button"
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          fontSize: "20px",
+          background: "transparent",
+          border: "none",
+          color: "white",
+          cursor: "pointer",
+        }}
+        onClick={openModal}
+      >
+        ℹ️
+      </button>
+
+      {/* Modal for displaying scene information */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        content={scene.description}
+      />
+
+      {/* Render related items */}
+      {scene.items &&
+        Object.entries(scene.items).map(([key, imageUrl]) => (
+          <motion.img
+            key={key}
+            src={imageUrl}
+            alt={key}
+            className="related-item-image"
+            style={{
+              position: "absolute",
+              bottom: `${Math.random() * 50 + 20}%`, // Random position just for example
+              right: `${Math.random() * 50 + 10}%`,
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        ))}
     </section>
   );
 }
 
 export default function App() {
-  //   const particleOptions: ISourceOptions = useMemo(
-  //     () => ({
-  //       particles: {
-  //         number: {
-  //           value: 80,
-  //           density: {
-  //             enable: true,
-  //             value_area: 800,
-  //           },
-  //         },
-  //         color: {
-  //           value: "#ffffff",
-  //         },
-  //         shape: {
-  //           type: "circle",
-  //           stroke: {
-  //             width: 0,
-  //             color: "#000000",
-  //           },
-  //           polygon: {
-  //             nb_sides: 5,
-  //           },
-  //           image: {
-  //             src: "img/github.svg",
-  //             width: 100,
-  //             height: 100,
-  //           },
-  //         },
-  //         opacity: {
-  //           value: 0.5,
-  //           random: false,
-  //           anim: {
-  //             enable: false,
-  //             speed: 1,
-  //             opacity_min: 0.1,
-  //             sync: false,
-  //           },
-  //         },
-  //         size: {
-  //           value: 10,
-  //           random: true,
-  //           anim: {
-  //             enable: false,
-  //             speed: 80,
-  //             size_min: 0.1,
-  //             sync: false,
-  //           },
-  //         },
-  //         line_linked: {
-  //           enable: true,
-  //           distance: 300,
-  //           color: "#ffffff",
-  //           opacity: 0.4,
-  //           width: 2,
-  //         },
-  //         move: {
-  //           enable: true,
-  //           speed: 12,
-  //           direction: MoveDirection.none, // Converted to MoveDirection enum
-  //           random: false,
-  //           straight: false,
-  //           out_mode: OutMode.out, // Converted to OutMode enum
-  //           bounce: false,
-  //           attract: {
-  //             enable: false,
-  //             rotateX: 600,
-  //             rotateY: 1200,
-  //           },
-  //         },
-  //       },
-  //       interactivity: {
-  //         detect_on: "canvas",
-  //         events: {
-  //           onhover: {
-  //             enable: false,
-  //             mode: "repulse",
-  //           },
-  //           onclick: {
-  //             enable: true,
-  //             mode: "push",
-  //           },
-  //           resize: {
-  //             enable: true,
-  //           },
-  //         },
-  //         modes: {
-  //           grab: {
-  //             distance: 800,
-  //             line_linked: {
-  //               opacity: 1,
-  //             },
-  //           },
-  //           bubble: {
-  //             distance: 800,
-  //             size: 80,
-  //             duration: 2,
-  //             opacity: 0.8,
-  //             speed: 3,
-  //           },
-  //           repulse: {
-  //             distance: 400,
-  //             duration: 0.4,
-  //           },
-  //           push: {
-  //             particles_nb: 4,
-  //           },
-  //           remove: {
-  //             particles_nb: 2,
-  //           },
-  //         },
-  //       },
-  //       retina_detect: true,
-  //     }),
-  //     []
-  //   );
-
-  //   const particlesLoaded = async (container?: Container): Promise<void> => {
-  //     console.log(container);
-  //   };
-
   const { scrollYProgress } = useScroll();
 
   const backgroundColor = useTransform(
@@ -178,21 +158,18 @@ export default function App() {
     restDelta: 0.001,
   });
 
-  const imageCount = 5; // Total number of images
-  const waterLevel = ["200M", "1000M", "2500M", "4000M", "6000M"];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((latest) => {
-      // Calculate the current image index based on the scroll progress
-      const index = Math.round(latest * (imageCount - 1));
+      const index = Math.round(latest * (scenes.length - 1));
       setCurrentIndex(index);
     });
 
     return () => {
       unsubscribe(); // Clean up the subscription on unmount
     };
-  }, [scrollYProgress, imageCount]);
+  }, [scrollYProgress]);
 
   return (
     <div className="body-page2">
@@ -203,23 +180,16 @@ export default function App() {
           transition: "background-color 0.5s",
         }}
       >
-        {[...Array(imageCount)].map((_, index) => (
-          <ImageCustom id={index + 1} key={index} />
+        {/* Dynamically render scenes */}
+        {scenes.map((scene) => (
+          <SceneComponent scene={scene} key={scene.id} />
         ))}
 
-        {/* Conditionally render particles for scenes 2 to 5 */}
-        {/* {currentIndex >= 1 && currentIndex <= 4 && (
-          <Particles
-            id="tsparticles"
-            options={particleOptions}
-            particlesLoaded={particlesLoaded}
-          />
-        )} */}
-
+        {/* Navigation bar */}
         <motion.div className="navigation-bar">
-          {Array.from({ length: imageCount }).map((_, index) => (
+          {scenes.map((scene, index) => (
             <motion.div
-              key={index}
+              key={scene.id}
               className="nav-marker"
               style={{
                 background:
@@ -232,7 +202,7 @@ export default function App() {
                 opacity: index === currentIndex ? 1 : 0.5,
               }}
             >
-              {waterLevel[index]}
+              {`${scenes[index].waterLevel}M`}
             </motion.div>
           ))}
         </motion.div>
