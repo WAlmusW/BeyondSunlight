@@ -9,6 +9,8 @@ import {
   useTransform,
 } from "framer-motion";
 import "./style2.css";
+import { FiAlertCircle, FiChevronLeft } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 // import Particles, { initParticlesEngine } from "@tsparticles/react";
 // import {
 //   type Container,
@@ -164,6 +166,7 @@ export default function App() {
   //     console.log(container);
   //   };
 
+  const router = useRouter();
   const { scrollYProgress } = useScroll();
 
   const backgroundColor = useTransform(
@@ -171,6 +174,39 @@ export default function App() {
     [0, 0.2, 0.5, 0.8, 1],
     ["#87CEEB", "#00BFFF", "#1E90FF", "#1C3B73", "#002f4b"]
   );
+
+  const modalData = [
+    {
+      temperature: "298 K / 25°C",
+      molecules: ["CO₂", "O₂", "NH₃", "NO₃⁻", "CH₄"],
+      minerals: "Mineral Set 1",
+      weather: "Sunny",
+    },
+    {
+      temperature: "300 K / 27°C",
+      molecules: ["H₂O", "N₂", "O₂"],
+      minerals: "Mineral Set 2",
+      weather: "Cloudy",
+    },
+    {
+      temperature: "290 K / 17°C",
+      molecules: ["CO₂", "O₂"],
+      minerals: "Mineral Set 3",
+      weather: "Rainy",
+    },
+    {
+      temperature: "290 K / 17°C",
+      molecules: ["CO₂", "O₂"],
+      minerals: "Mineral Set 3",
+      weather: "Rainy",
+    },
+    {
+      temperature: "290 K / 17°C",
+      molecules: ["CO₂", "O₂"],
+      minerals: "Mineral Set 3",
+      weather: "Rainy",
+    },
+  ];
 
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -181,6 +217,7 @@ export default function App() {
   const imageCount = 5; // Total number of images
   const waterLevel = ["200M", "1000M", "2500M", "4000M", "6000M"];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((latest) => {
@@ -217,13 +254,59 @@ export default function App() {
         )} */}
 
         <motion.div className="navigation-bar">
+          {/* Back Button when currentIndex is 0 */}
+          {currentIndex === 0 && (
+            <button
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "1000px",
+                // backgroundColor: "transparent",
+                // color: "var(--blue)",
+                // padding: "10px",
+                // borderRadius: "50%",
+                // cursor: "pointer",
+                // border: "none",
+              }}
+              onClick={() => router.back()}
+            >
+              <FiChevronLeft className="text-white text-5xl" />
+            </button>
+          )}
+          <button
+            style={{
+              position: "absolute",
+              top: "140px",
+              right: "1000px",
+            }}
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          >
+            <FiAlertCircle className="text-white text-5xl" />
+          </button>
+          {isModalOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "120px",
+                right: "650px",
+                width: "300px",
+                height: "350px",
+              }}
+              className="bg-gray-200 opacity-50 text-black rounded-lg pl-6 pt-6 text-3xl"
+            >
+              Temp: {modalData[currentIndex].temperature} <br />
+              Molecules: {modalData[currentIndex].molecules} <br />
+              Minerals: {modalData[currentIndex].minerals} <br />
+              Weather: {modalData[currentIndex].weather} <br />
+            </div>
+          )}
           {Array.from({ length: imageCount }).map((_, index) => (
             <motion.div
               key={index}
               className="nav-marker"
               style={{
                 background:
-                  index === currentIndex ? "var(--blue)" : "var(--white)",
+                  index === currentIndex ? "var(--dusk)" : "var(--white)",
                 height: 20,
                 width: 20,
                 borderRadius: "50%",
@@ -232,7 +315,15 @@ export default function App() {
                 opacity: index === currentIndex ? 1 : 0.5,
               }}
             >
-              {waterLevel[index]}
+              <div
+                className="ml-6"
+                style={{
+                  fontSize: index === currentIndex ? "16px" : "12px",
+                  color: index === currentIndex ? "var(--red)" : "var(--white)",
+                }}
+              >
+                {waterLevel[index]}
+              </div>
             </motion.div>
           ))}
         </motion.div>
