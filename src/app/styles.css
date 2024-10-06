@@ -12,7 +12,7 @@ body {
   --orange: #fd7702;
   --yellow: #ffbb00;
 
-  /* --background: var(--sky); */
+  --background: var(--sky);
   --accent: var(--white);
 
   margin: 0;
@@ -183,24 +183,47 @@ img {
 
 .navigation-bar {
   position: fixed;
-  right: 100px;
+  right: 30px;
   top: 50px;
   bottom: 50px;
-  width: 5px; /* You may adjust this width */
+  width: 10px; /* Width of the vertical line */
   height: calc(100% - 100px);
-  background: var(--accent);
+  background: var(--accent); /* Color of the line */
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center align markers */
-  justify-content: space-around; /* Space markers evenly */
+  align-items: end; /* Align items to the left */
+  justify-content: space-between; /* Space markers evenly */
+  background-color: #22dddd;
 }
 
+.nav-item {
+  display: flex; /* Use flex to align the marker and text */
+  align-items: center; /* Center align marker and text vertically */
+  /* margin: 5px 0; Space between items */
+}
+
+.nav-text {
+  margin-right: 10px; /* Space between text and marker */
+  color: var(--accent); /* Use accent color for the text */
+}
+
+/* Keep the marker styles the same */
 .nav-marker {
   background: var(--white); /* Default marker color */
   height: 10px; /* Adjust as needed */
   width: 10px; /* Adjust as needed */
   border-radius: 50%;
-  margin: 5px 0;
   opacity: 0.5; /* Default opacity */
+}
+
+/* Add this to ensure the background video fits the screen */
+.background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1; /* Ensure the video is behind all other content */
 }

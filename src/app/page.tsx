@@ -1,14 +1,8 @@
 "use client";
-// Photos from https://citizenofnowhe.re/lines-of-the-city
+
 import { useRef, useState, useEffect } from "react";
 import "./styles.css";
-import {
-  motion,
-  MotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, MotionValue, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 function useParallax(value: MotionValue<number>) {
@@ -23,7 +17,6 @@ function ImageCustom({ id }: { id: number }) {
   return (
     <section>
       <div ref={ref}>
-        {/* <video src="/1.mp4" autoPlay loop muted></video> */}
         <Image
           src={`/images/${id}.jpg`}
           alt="A London skyscraper"
@@ -38,66 +31,81 @@ function ImageCustom({ id }: { id: number }) {
 
 export default function App() {
   const { scrollYProgress } = useScroll();
-
-  // Define background color based on scroll position
-  const backgroundColor = useTransform(
-    scrollYProgress,
-    [0, 0.2, 0.5, 0.8, 1],
-    ["#87CEEB", "#00BFFF", "#1E90FF", "#1C3B73", "#002f4b"]
-  );
-
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
   const imageCount = 5; // Total number of images
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentVideo, setCurrentVideo] = useState("/1.mp4"); // Initial background video
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((latest) => {
-      // Calculate the current image index based on the scroll progress
       const index = Math.round(latest * (imageCount - 1));
       setCurrentIndex(index);
+      setCurrentVideo(`/${index + 1}.mp4`); // Update video based on index
     });
 
     return () => {
-      unsubscribe(); // Clean up the subscription on unmount
+      unsubscribe(); // Clean up subscription on unmount
     };
   }, [scrollYProgress, imageCount]);
 
+  useEffect(() => {
+    setCurrentVideo(`/${currentIndex + 1}.mp4`); // Update video based on index
+  }, [currentIndex]);
+
   return (
-    <motion.div
-      style={{
-        backgroundColor,
-        minHeight: "100vh",
-        transition: "background-color 0.5s",
-      }}
-    >
-      {[1, 2, 3, 4, 5].map((image) => (
-        <ImageCustom id={image} key={image} />
-      ))}
-      {/* <motion.div className="progress" style={{ scaleX }} /> */}
-      <motion.div className="navigation-bar">
-        {Array.from({ length: imageCount }).map((_, index) => (
-          <motion.div
-            key={index}
-            className="nav-marker"
-            style={{
-              background:
-                index === currentIndex ? "var(--blue)" : "var(--white)",
-              height: 20,
-              width: 20,
-              borderRadius: "50%",
-              margin: "5px 0",
-              opacity: index === currentIndex ? 1 : 0.5,
-            }}
-          >
-            {index + 1}00M
-          </motion.div>
+    <div>
+      {/* Dynamic Background Video */}
+      <video
+        className="background-video"
+        src={currentVideo}
+        autoPlay
+        loop
+        muted
+      />
+
+      {/* Main Content */}
+      <motion.div
+        style={{
+          minHeight: "100vh",
+          position: "relative",
+          zIndex: 2, // Ensures content is above the video
+        }}
+      >
+        {[1, 2, 3, 4, 5].map((image) => (
+          <ImageCustom id={image} key={image} />
         ))}
+        <motion.div className="navigation-bar">
+          {Array.from({ length: imageCount }).map((_, index) => (
+            <div key={index} className="nav-item">
+              <span
+                className="nav-text"
+                style={{
+                  fontSize: index === currentIndex ? "20px" : "14px",
+                  fontWeight: index === currentIndex ? "bold" : "normal",
+                }}
+              >
+                {index + 1}00M
+              </span>
+              <div
+                onClick={() => {
+                  // setCurrentIndex(index);
+                  // setCurrentVideo(`/${index + 1}.mp4`);
+                }}
+                className="nav-marker"
+                style={{
+                  background:
+                    index === currentIndex ? "var(--blue)" : "var(--red)",
+                  height: 10,
+                  width: 10,
+                  borderRadius: "50%",
+                  margin: "5px 0",
+                  opacity: index === currentIndex ? 1 : 0.5,
+                  // cursor: "pointer",
+                }}
+              />
+            </div>
+          ))}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
