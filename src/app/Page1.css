@@ -1,0 +1,151 @@
+.montserrat-font-name {
+  font-family: "Montserrat";
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: clamp(1rem, 3.5vw, 10rem);
+}
+
+.montserrat-font-description {
+  font-family: "Montserrat";
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-size: clamp(1rem, 1.28vw, 10rem);
+}
+
+.advent-pro-title {
+  font-family: "Advent Pro";
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(1rem, 5vw, 30rem);
+}
+
+.advent-pro-subtitle {
+  font-family: "Advent Pro";
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  font-size: clamp(1rem, 2vw, 30rem);
+}
+
+body {
+  overflow: hidden;
+  background-image: url("/page1_images/space_background.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.body-page1 {
+  background-color: #000000;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-image: url("/page1_images/space_background.png");
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.title {
+  padding-top: 10%;
+  position: absolute;
+  left: 39%;
+}
+
+.subtitle {
+  padding-top: 15%;
+  position: absolute;
+  left: 43%;
+  font-size: small;
+}
+
+.section {
+  height: 100vh;
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+}
+
+.the-dwarf-star {
+  width: 50%;
+  height: 100%;
+  background-image: url("/page1_images/Blue_giant_1.png");
+  background-position: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  box-shadow: 0 0 40px 20px rgba(0, 150, 255, 0.6);
+}
+
+.cerulean {
+  width: 50%;
+  height: 100%;
+  background-image: url("/page1_images/planet.png");
+  background-position: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  /* box-shadow: 0 0 5px 5cap rgba(0, 150, 255, 0.6); */
+}
+
+.round-box {
+  top: 50%;
+  left: 25%;
+  width: 100px;
+  height: 100px;
+  border-radius: 15%;
+  background-color: blue;
+  position: absolute;
+}
+
+.infographic {
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  background: transparent;
+  padding-top: 5%;
+  width: 35%;
+}
+
+.name {
+  padding-right: 5%;
+  border-radius: 5px;
+}
+
+.description {
+  padding-top: 5%;
+  padding-right: 5%;
+  border-radius: 5px;
+  width: 65%;
+}
+
+#section1 {
+  background-image: url("/page1_images/space_background.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.custom-button {
+  background-color: #2121a4; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #54c9db;
+}
